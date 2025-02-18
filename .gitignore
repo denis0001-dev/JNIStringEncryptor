@@ -2,9 +2,16 @@
 !gradle/wrapper/gradle-wrapper.jar
 
 /backend/build/
-/frontend-web/build/
+/frontend-web/build/classes
+/frontend-web/build/compileSync
+/frontend-web/build/klib
+/frontend-web/build/kotlin
+/frontend-web/build/kotlin-webpack
+/frontend-web/build/processedResources
+/frontend-web/build/tmp
 /frontend-console/build/classes
 /build/
+/kotlin-js-store
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

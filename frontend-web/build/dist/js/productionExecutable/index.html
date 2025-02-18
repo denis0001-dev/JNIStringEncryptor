@@ -1,0 +1,76 @@
+<!--
+  ~ JNIStringEncryptor
+  ~ Copyright (C) 2025 denis0001-dev
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>JNI String Encryptor</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="highlight.js/styles/github-dark.min.css">
+        <script src="highlight.js/highlight.min.js"></script>
+        <script src="highlight.js/languages/cpp.min.js"></script>
+        <script src="highlight.js/languages/java.min.js"></script>
+    </head>
+    <body>
+        <div id="main">
+            <h1>JNI String Encryptor</h1>
+            <div class="row">
+                <span class="label">String to encrypt: </span>
+                <input id="str" class="inp" />
+            </div>
+            <div class="row">
+                <span class="label">Package name (leave blank to auto-generate): </span>
+                <input id="packageName" class="inp" />
+            </div>
+            <div class="row">
+                <span class="label">Class name (leave blank to auto-generate): </span>
+                <input id="className" class="inp" />
+            </div>
+            <div class="row">
+                <span class="label">Method name (leave blank to auto-generate): </span>
+                <input id="methodName" class="inp" />
+            </div>
+            <div class="row">
+                <span class="label">Native library name: </span>
+                <input id="nativeLibName" class="inp" />
+            </div>
+            <button id="generate">Generate code</button>
+            <div id="result" class="hidden">
+                <div class="sep"></div>
+                <div class="textstart">
+                    <pre class="code" id="error"></pre>
+                    <div class="code hidden">
+                        <span>JNI code:</span>
+                        <pre><code id="jniCode" class="language-cpp"></code></pre>
+                    </div>
+                    <div class="code hidden">
+                        <span>Java code:</span>
+                        <pre><code id="javaCode" class="language-java"></code></pre>
+                    </div>
+                    <div class="code hidden">
+                        <span>Call like this:</span>
+                        <pre><code id="callExample" class="language-java"></code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--suppress HtmlUnknownTarget -->
+        <script src="frontend-web.js"></script>
+    </body>
+</html>

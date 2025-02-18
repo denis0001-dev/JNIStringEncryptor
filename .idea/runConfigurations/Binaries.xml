@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Binaries" type="CompoundRunConfigurationType">
+    <toRun name="Linux binaries" type="GradleRunConfiguration" />
+    <toRun name="Mac binaries" type="GradleRunConfiguration" />
+    <toRun name="Windows binaries" type="GradleRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>

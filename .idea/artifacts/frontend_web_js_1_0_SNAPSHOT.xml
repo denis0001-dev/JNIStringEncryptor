@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="frontend-web-js-1.0-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/frontend-web/build/libs</output-path>
+    <root id="archive" name="frontend-web-js-1.0-SNAPSHOT.jar">
+      <element id="module-output" name="JNIStringEncryptor.frontend-web.jsMain" />
+    </root>
+  </artifact>
+</component>

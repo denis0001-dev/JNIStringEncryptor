@@ -1,27 +1,27 @@
-package ru.morozovit
+package ru.morozovit.jnistringencryptor
 
 import kotlin.random.Random
 import kotlin.random.nextInt
 
 val reservedDeclarations = mutableListOf<String>()
 
-const val INDENT = 4
-val SPACE = run {
+private const val INDENT = 4
+private val SPACE = run {
     var str = ""
     repeat(INDENT) {
         str += " "
     }
     str
 }
-const val LINE_LIMIT = 128
+private const val LINE_LIMIT = 128
 
-data class Type(
+private data class Type(
     val jniName: String,
     val javaName: String,
     val create: () -> String
 )
 
-val jniTypes = mutableListOf(
+private val jniTypes = mutableListOf(
     Type("jobject", "Object") {
         if (Random.nextInt(1..2) == 2) "new Object()" else "null"
     },
@@ -37,7 +37,7 @@ val jniTypes = mutableListOf(
     },
     Type("jbooleanArray", "boolean[]") {
         val length = Random.nextInt(1..16)
-        val elements = List(length) { if (Math.random() < 0.5) "true" else "false" }
+        val elements = List(length) { if (Random.nextInt(1..2) == 2) "true" else "false" }
         "new boolean[] {${elements.joinToString()}}"
     },
     Type("jbyteArray", "byte[]") {
@@ -45,11 +45,11 @@ val jniTypes = mutableListOf(
         val elements = List(length) { Random.nextBytes(1)[0].toString() }
         "new byte[] {${elements.joinToString()}}"
     },
-    Type("jcharArray", "char[]") {
+    /*Type("jcharArray", "char[]") {
         val length = Random.nextInt(1..16)
         val elements = List(length) { "'\\u${Random.nextInt().toChar().code}'" }
         "new char[] {${elements.joinToString()}}"
-    },
+    },*/
     Type("jthrowable", "Throwable") {
         if (Random.nextInt(1..16) == 2) "Exception(\"Error occurred\")" else "null"
     }
@@ -77,110 +77,22 @@ fun generateString(): String {
     return name
 }
 
-fun String.startsWithNumber() =
-    startsWith("0") || startsWith("1") || startsWith("2") ||
-    startsWith("3") || startsWith("4") || startsWith("5") ||
-    startsWith("6") || startsWith("7") || startsWith("8") ||
-    startsWith("9")
+data class EncryptionResult(
+    val jniCode: String,
+    val javaCode: String,
+    val callExample: String
+)
 
-fun String.removeIfContains(vararg elements: Char): Set<Char> {
-    val chars = this.toList().toMutableSet()
-    elements.forEach {
-        if (this.contains(it)) {
-            chars.remove(it)
-        }
-    }
-    return chars
-}
-
-fun validate(string: String, isPackageName: Boolean = false): Boolean {
-    if (isPackageName) {
-        val strs = string.split('.')
-        return !strs.any {
-            !validate(it)
-        }
-    }
-    if (string.isBlank()) return false
-    if (string.startsWithNumber()) return false
-    val letters = "qwertyuiopasdfghjklzxcvbnm"
-    val capitalizedLetters = letters.uppercase()
-    val numbers = "0123456789"
-    val possibleChars = "$letters$capitalizedLetters${numbers}".toCharArray()
-    val chars = string.removeIfContains(*possibleChars)
-    return chars.isEmpty()
-}
-
-fun main() {
-    // Collect information
-    print("What string do you want to encrypt? ")
-    val str = readln()
-    print("What package name do you want (just press Enter to auto-generate)? ")
-    val packageName = run {
-        var name: String
-        while (true) {
-            name = readlnOrNull().let {
-                if (it.isNullOrBlank()) {
-                    val name1 = mutableListOf<String>()
-                    repeat(Random.nextInt(1..3)) {
-                        name1 += generateString()
-                    }
-                    name1.joinToString(separator = ".")
-                } else {
-                    it
-                }
-            }
-            if (!validate(name, true))
-                println("Invalid package name $name, try again")
-            else break
-        }
-        name
-    }
-    print("What class name do you want (just press Enter to auto-generate)? ")
-    val className = run {
-        var name: String
-        while (true) {
-            name = readlnOrNull().let {
-                if (it.isNullOrBlank()) {
-                    generateString()
-                } else {
-                    it
-                }
-            }
-            if (!validate(name))
-                println("Invalid class name $name, try again")
-            else break
-        }
-        name
-    }
-    print("What method name do you want (just press Enter to auto-generate)? ")
-    val methodName = run {
-        var name: String
-        while (true) {
-            name = readlnOrNull().let {
-                if (it.isNullOrBlank()) {
-                    generateString()
-                } else {
-                    it
-                }
-            }
-            if (!validate(name))
-                println("Invalid method name $name, try again")
-            else break
-        }
-        name
-    }
+fun encrypt(
+    str: String,
+    packageName: String = generateString(),
+    className: String = generateString(),
+    methodName: String = generateString(),
+    nativeLibName: String
+): EncryptionResult {
     val classPath = "$packageName.$className.$methodName"
-    print("Your native library name? ")
-    val nativeLibName = readln()
-
-    println("Your package name: $packageName")
-    println("Your class name: $className")
-    println("Your method name: $methodName")
-    println("All info collected, encrypting...\n---------")
-
-
     // Divide into chunks & generate declarations
-    val chunks = splitStringIntoRandomChunks(str, 2, 5)
+    val chunks = str.splitToChunks(2, 5)
     val declarations = mutableListOf<Pair<String, String>>()
     chunks.forEach {
         val name = generateString()
@@ -240,9 +152,7 @@ fun main() {
         |)
     """.trimMargin()
 
-
-    // Put the C++ code all together and print it
-    println("Final code:")
+    // Put the C++ code all together
     val decryptedStringId = generateString()
     val finalJstringId = generateString()
     val innerCode = """
@@ -268,10 +178,6 @@ fun main() {
         |$innerCode
         |}
     """.trimMargin()
-    println(finalCode)
-    // Print Java part
-    println()
-    println("Java code:")
     val map = types.associateBy { generateString() }
 
     val representations2 = map.entries.joinToString(",\n") {
@@ -309,10 +215,7 @@ fun main() {
         |    );
         |}
     """.trimMargin()
-    println(javaCode)
-    // Print a call example
-    println()
-    println("Call like this:")
+    // Call example
     val callParams =
         types.joinToString(",\n") { "$SPACE${it.create()}" }
     val call = """
@@ -322,30 +225,10 @@ fun main() {
         |$callParams
         |)
     """.trimMargin()
-    println(call)
+
+    return EncryptionResult(
+        jniCode = finalCode,
+        javaCode = javaCode,
+        callExample = call
+    )
 }
-
-fun splitStringIntoRandomChunks(input: String, minChunkSize: Int, maxChunkSize: Int): List<String> {
-    val chunks = mutableListOf<String>()
-    var remainingString = input
-
-    while (remainingString.isNotBlank()) {
-        val chunkSize = Random.nextInt(maxChunkSize - minChunkSize + 1) + minChunkSize
-        if (chunkSize > remainingString.length) {
-            chunks.add(remainingString)
-            break
-        }
-        val (chunk, rest) = remainingString.splitAt(chunkSize)
-        chunks.add(chunk)
-        remainingString = rest
-    }
-
-    return chunks
-}
-
-fun String.splitAt(index: Int): Pair<String, String> {
-    return this.take(index) to this.drop(index)
-}
-
-// TODO frontend
-// TODO move code to encryption function

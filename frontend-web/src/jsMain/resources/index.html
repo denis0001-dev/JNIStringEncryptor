@@ -21,10 +21,56 @@
     <head>
         <meta charset="UTF-8">
         <title>JNI String Encryptor</title>
-        <!--suppress HtmlUnknownTarget -->
-        <script src="frontend-web.js"></script>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="highlight.js/styles/github-dark.min.css">
+        <script src="highlight.js/highlight.min.js"></script>
+        <script src="highlight.js/languages/cpp.min.js"></script>
+        <script src="highlight.js/languages/java.min.js"></script>
     </head>
     <body>
-        test
+        <div id="main">
+            <h1>JNI String Encryptor</h1>
+            <div class="row">
+                <span class="label">String to encrypt: </span>
+                <input id="str" class="inp" />
+            </div>
+            <div class="row">
+                <span class="label">Package name (leave blank to auto-generate): </span>
+                <input id="packageName" class="inp" />
+            </div>
+            <div class="row">
+                <span class="label">Class name (leave blank to auto-generate): </span>
+                <input id="className" class="inp" />
+            </div>
+            <div class="row">
+                <span class="label">Method name (leave blank to auto-generate): </span>
+                <input id="methodName" class="inp" />
+            </div>
+            <div class="row">
+                <span class="label">Native library name: </span>
+                <input id="nativeLibName" class="inp" />
+            </div>
+            <button id="generate">Generate code</button>
+            <div id="result" class="hidden">
+                <div class="sep"></div>
+                <div class="textstart">
+                    <pre class="code" id="error"></pre>
+                    <div class="code hidden">
+                        <span>JNI code:</span>
+                        <pre><code id="jniCode" class="language-cpp"></code></pre>
+                    </div>
+                    <div class="code hidden">
+                        <span>Java code:</span>
+                        <pre><code id="javaCode" class="language-java"></code></pre>
+                    </div>
+                    <div class="code hidden">
+                        <span>Call like this:</span>
+                        <pre><code id="callExample" class="language-java"></code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--suppress HtmlUnknownTarget -->
+        <script src="frontend-web.js"></script>
     </body>
 </html>

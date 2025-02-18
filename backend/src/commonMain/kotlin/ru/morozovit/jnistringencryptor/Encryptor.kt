@@ -73,6 +73,23 @@ private val jniTypes = mutableListOf(
     }
 )
 
+fun validate(string: String, isPackageName: Boolean = false): Boolean {
+    if (isPackageName) {
+        val strs = string.split('.')
+        return !strs.any {
+            !validate(it)
+        }
+    }
+    if (string.isBlank()) return false
+    if (string.startsWithNumber()) return false
+    val letters = "qwertyuiopasdfghjklzxcvbnm"
+    val capitalizedLetters = letters.uppercase()
+    val numbers = "0123456789"
+    val possibleChars = "$letters$capitalizedLetters${numbers}".toCharArray()
+    val chars = string.removeIfContains(*possibleChars)
+    return chars.isEmpty()
+}
+
 fun generateString(): String {
     val letters = "qwertyuiopasdfghjklzxcvbnm"
     val capitalizedLetters = letters.uppercase()

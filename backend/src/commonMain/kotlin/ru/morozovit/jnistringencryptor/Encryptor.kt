@@ -141,7 +141,7 @@ fun encrypt(
             .joinToString(" + ")
     };"
     // Pretty-print & limit line length to 128
-    val decSequence = declarations.joinToString { it.first }
+    val decSequence = declarations.map { it.first }.reversed().joinToString()
     val decSequence2 = decSequence.toMutableList()
     var actualCharLimit = LINE_LIMIT
     var lastColonIndex = -1

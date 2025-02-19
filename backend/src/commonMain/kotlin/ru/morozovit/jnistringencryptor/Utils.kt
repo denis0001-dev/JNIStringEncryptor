@@ -38,6 +38,7 @@ fun String.splitToChunks(minChunkSize: Int, maxChunkSize: Int): List<String> {
     return chunks
 }
 
+@Suppress("NOTHING_TO_INLINE", "KotlinRedundantDiagnosticSuppress")
 private inline fun String.splitAt(index: Int): Pair<String, String> {
     return this.take(index) to this.drop(index)
 }

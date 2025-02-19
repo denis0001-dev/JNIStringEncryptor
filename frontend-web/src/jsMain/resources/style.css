@@ -43,12 +43,12 @@ body, #main {
         padding: 10px;
         caret-color: white;
         color: white;
+        font-family: monospace;
+        font-size: 12px;
     }
     input.inp:focus, input.inp:focus-visible, input.inp:focus-within {
         border: 1px solid white;
         outline: none;
-        font-family: monospace;
-        font-size: 12px;
     }
 }
 

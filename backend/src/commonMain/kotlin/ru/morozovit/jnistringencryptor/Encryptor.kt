@@ -209,6 +209,9 @@ fun encrypt(
         .lines()
         .joinToString("\n") { "$SPACE$it" }
     val finalCode = """
+        |/**
+        | * @returns the string @code "$str"@endcode
+        | */
         |$signature {
         |$innerCode
         |}

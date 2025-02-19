@@ -20,6 +20,7 @@ package ru.morozovit.jnistringencryptor
 
 import kotlinx.browser.document
 import org.w3c.dom.*
+import ru.morozovit.utils.Cookies
 import ru.morozovit.utils.forEach
 
 val packageNameField = document.getElementById("packageName") as HTMLInputElement
@@ -101,6 +102,11 @@ fun main() {
             jniCodeOutput.textContent = jniCode
             javaCodeOutput.textContent = javaCode
             callExampleOutput.textContent = callExample
+            Cookies["lastStringToEncrypt"] = strToEncrypt.value
+            Cookies["lastPackageName"] = packageNameField.value
+            Cookies["lastClassName"] = classNameField.value
+            Cookies["lastMethodName"] = methodNameField.value
+            Cookies["lastNativeLibName"] = nativeLibNameField.value
             hljs.highlightAll()
             result.querySelectorAll(".code").forEach {
                 it as HTMLElement
@@ -113,4 +119,11 @@ fun main() {
             return@addEventListener
         }
     })
+
+    // Cookies
+    Cookies["lastStringToEncrypt"]?.let { strToEncrypt.value = it }
+    Cookies["lastPackageName"]?.let { packageNameField.value = it }
+    Cookies["lastClassName"]?.let { classNameField.value = it }
+    Cookies["lastMethodName"]?.let { methodNameField.value = it }
+    Cookies["lastNativeLibName"]?.let { nativeLibNameField.value = it }
 }

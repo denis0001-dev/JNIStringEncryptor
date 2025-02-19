@@ -189,26 +189,23 @@ fun encrypt(
 
     // Put the C++ code all together
     val decryptedStringId = generateString()
-    val finalJstringId = generateString()
     val innerCode = """
         |${declarations.joinToString("\n") { it.second }}
         |$uselessDeclaration
         |$decryptionCode
         |std::reverse($decryptedId.begin(), $decryptedId.end());
         |std::string $decryptedStringId;
-        |for (const auto & i : $decryptedStringId) {
-        |    $decryptedStringId += i;
+        |for (int i = 0; i < $decryptedId.size(); i++) {
+        |    $decryptedStringId += $decryptedId[i];
         |}
-        |std::wstring $finalJstringId($decryptedStringId.begin(), $decryptedStringId.end());
-        |return env->NewString(
-        |    (const jchar*)$finalJstringId.c_str(),
-        |    (jsize)$finalJstringId.length()
-        |);
+        |return env->NewStringUTF($decryptedStringId.c_str());
     """
         .trimMargin()
         .lines()
         .joinToString("\n") { "$SPACE$it" }
     val finalCode = """
+        |#pragma clang diagnostic push
+        |#pragma ide diagnostic ignored "modernize-loop-convert"
         |/**
         | * @returns the string @code "$str"@endcode
         | */
